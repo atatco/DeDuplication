@@ -1,0 +1,28 @@
+import pymongo
+from bson.objectid import ObjectId
+
+if __name__ == '__main__':
+    mongo_connection_uta_stage = "mongodb+srv://atatco:wrz9TjDzXm6zq4zo@cluster0.shzhn.mongodb.net/test"
+    client_uta = pymongo.MongoClient(mongo_connection_uta_stage)
+    db_uta = client_uta["uta"]
+    col_people = db_uta["prod_people"]
+    filter = {"type": "Client"}
+    cur_uta_client = col_people.find(filter)
+    lst_uta_clients = list(cur_uta_client)
+
+
+
+for uta_client in lst_uta_clients:
+    if "representedByAgencies" in uta_client.keys():
+        agencies = uta_client.get("representedByAgencies")
+        if (len(agencies) >= 2):
+            seen = set()
+            new_1 = []
+            t = []
+            for i in agencies:
+                t = tuple(i.values())[0]
+                if t not in seen:
+                    seen.add(t)
+                    new_1.append(i)
+                    print(new_1)
+        # col_people.update_one({“_id”: uta_talent[“_id”]}, {“representedByAgencies”: agencies})
