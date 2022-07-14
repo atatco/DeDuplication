@@ -19,7 +19,7 @@ for uta_client in lst_uta_clients:
             seen = set()
             new_1 = []
             t = []
-            for i in agencies:                                        # to put primary for everything in the first index
+            for i in agencies:                                        # to put primary in the first index
                 if len(i) == 2:
                     t = tuple(i.values())[0]
                     seen.add(t)
