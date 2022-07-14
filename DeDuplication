@@ -2,7 +2,7 @@ import pymongo
 from bson.objectid import ObjectId
 
 if __name__ == '__main__':
-    mongo_connection_uta_stage = "mongodb+srv://atatco:wrz9TjDzXm6zq4zo@cluster0.shzhn.mongodb.net/test"
+    mongo_connection_uta_stage = "mongodb+srv://atatco:@cluster0.shzhn.mongodb.net/test"
     client_uta = pymongo.MongoClient(mongo_connection_uta_stage)
     db_uta = client_uta["uta"]
     col_people = db_uta["prod_people"]
@@ -15,17 +15,25 @@ if __name__ == '__main__':
 for uta_client in lst_uta_clients:
     if "representedByAgencies" in uta_client.keys():
         agencies = uta_client.get("representedByAgencies")
-        if (len(agencies) >= 2):                                      # >= 2 to capture ones w UTA as primary and UTA
+        if (len(agencies) >= 2):                                            # >= 2 to capture ones w UTA as primary and UTA
             seen = set()
-            new_1 = []
+            updated_agencies = []
             t = []
-            for i in agencies:                                        # to put primary in the first index
-                if len(i) == 2:
-                    t = tuple(i.values())[0]
+            for company in agencies:                                        # to put primary for everything in the first index
+                if len(company) == 2:
+                    t = tuple(company.values())[0]
                     seen.add(t)
-                    new_1.append(i)
-            for i in agencies:                                        #to remove duplicates
-                t = tuple(i.values())[0]
+                    updated_agencies.append(company)
+            for company in agencies:                                        #to remove duplicates
+                t = tuple(company.values())[0]
                 if t not in seen:
                     seen.add(t)
-                    new_1.append(i)
+                    updated_agencies.append(company)                    
+            #col_people.update_one({"_id": uta_client["_id"]}, {"representedByAgencies": updated_agencies})
+
+            # for company in agencies:                                        #if just moving the primary to first index
+            #     if len(company) == 2:
+            #         agencies.remove(company)
+            #         agencies.insert(0, company)
+            
+            
